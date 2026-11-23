@@ -186,6 +186,7 @@ function xl(){var R=resp(),hd=['Дата','Тип'],cols=[];ALL.forEach(function
  var rows=[hd].concat(R.map(function(r){var o=[r.t,r.demo?'Демо':'Реальный'];cols.forEach(function(c){var v=r.a[c[0]];if(c.length>1)v=(v||{})[c[1]];o.push(Array.isArray(v)?v.join('; '):(v==null?'':v))});return o}));
  try{var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),'Ответы');XLSX.writeFile(wb,'shkolny_opros.xlsx')}catch(e){alert('В предпросмотре скачивание может быть отключено. В боевой версии кнопка работает.')}}
 
+  
 /* ===================== БОЕВОЙ РЕЖИМ: Google + сервер ===================== */
 var API='https://script.google.com/macros/s/AKfycbxWH1ddzIJ3DcNs92WB36vn7lGanBH6hXPHOCRvfBggy6QyYtP0GFF-W-Zc5HDiF9nc/exec',CID='608509920847-vj7b35133qesqr78ilnjqji5r66c08un.apps.googleusercontent.com';
 
