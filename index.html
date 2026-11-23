@@ -188,7 +188,10 @@ function xl(){var R=resp(),hd=['Дата','Тип'],cols=[];ALL.forEach(function
 
 /* ===================== БОЕВОЙ РЕЖИМ: Google + сервер ===================== */
 var API='https://script.google.com/macros/s/AKfycbxWH1ddzIJ3DcNs92WB36vn7lGanBH6hXPHOCRvfBggy6QyYtP0GFF-W-Zc5HDiF9nc/exec',CID='608509920847-vj7b35133qesqr78ilnjqji5r66c08un.apps.googleusercontent.com';
-var TOK='',SES='',SV={};
+
+// Сохраняем и восстанавливаем токены из localStorage, чтобы они не слетали при F5
+var TOK=localStorage.getItem('ss_tok')||'',SES=localStorage.getItem('ss_ses')||'',SV={};
+
 function api(a,x){var b=Object.assign({action:a,idToken:TOK,session:SES},x||{});
  return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(b)}).then(function(r){return r.json()}).then(function(j){if(!j.ok)throw new Error(j.error||'Ошибка сервера');return j})}
 function loc(i){if(!i)return'';var d=new Date(i);return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,16)}
@@ -201,9 +204,11 @@ function ld(k,d){return k==K.v?(SV.voted?[me]:[]):d}
 function sv(){}
 function showErr(e){var t=$('stt');if(isOwn&&t)t.innerHTML='<span class="tag t-no">'+esc(e.message)+'</span>';else alert(e.message)}
 
-function onGoogle(r){TOK=r.credential;
- try{me=JSON.parse(decodeURIComponent(escape(atob(r.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))))).email}catch(e){}
- $('le').textContent='Проверяем доступ…';refresh().then(enter).catch(function(e){$('le').textContent=e.message})}
+function onGoogle(r){
+  TOK=r.credential;
+  localStorage.setItem('ss_tok', TOK);
+  try{me=JSON.parse(decodeURIComponent(escape(atob(r.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))))).email}catch(e){}
+  $('le').textContent='Проверяем доступ…';refresh().then(enter).catch(function(e){$('le').textContent=e.message})}
 function refresh(){return api('whoami').then(function(j){SV=Object.assign(SV,j);return j})}
 function enter(j){$('le').textContent='';
  if(j.role=='owner_pending'){api('ownerCode').then(function(){$('cc').classList.remove('hide');$('cc').scrollIntoView({behavior:'smooth'})}).catch(function(e){$('le').textContent=e.message});return}
@@ -214,8 +219,23 @@ function finish(j){isOwn=j.role=='owner';isAdm=isOwn||j.role=='viewer';
  if(isAdm)loadAdmin().then(function(){tab('a')}).catch(showErr);else tab('s')}
 function loadAdmin(){return api('results').then(function(r){SV.responses=r.responses;Object.assign(SV,{closed:r.closed,phase:r.phase,start:r.start,deadline:r.deadline})}).then(function(){return isOwn?api('listViewers').then(function(r){SV.viewers=r.viewers}):0})}
 var _tab=tab;tab=function(t){if(t=='a'&&isAdm)return loadAdmin().then(function(){_tab('a')}).catch(showErr);_tab(t)};
-function chk(){api('ownerVerify',{code:$('ci').value.trim()}).then(function(j){SES=j.session;$('cc').classList.add('hide');return refresh()}).then(finish).catch(function(e){$('ce').textContent=e.message})}
-var _lo=logout;logout=function(){TOK='';SES='';SV={};try{google.accounts.id.disableAutoSelect()}catch(e){}_lo()};
+function chk(){
+  api('ownerVerify',{code:$('ci').value.trim()}).then(function(j){
+    SES=j.session;
+    localStorage.setItem('ss_ses', SES);
+    $('cc').classList.add('hide');
+    return refresh()
+  }).then(finish).catch(function(e){$('ce').textContent=e.message})}
+
+var _lo=logout;
+logout=function(){
+  TOK=''; SES='';
+  localStorage.removeItem('ss_tok');
+  localStorage.removeItem('ss_ses');
+  SV={};
+  try{google.accounts.id.disableAutoSelect()}catch(e){}
+  _lo();
+};
 
 function submit(){api('submit',{answers:ans}).then(function(){SV.voted=true;$('step').innerHTML='<div class="card"><h3>✅ Ваш голос учтён для обращения к директору</h3><p class="mu">Спасибо за участие!</p></div>';nav(0);$('pb').style.width='100%'}).catch(function(e){$('step').insertAdjacentHTML('afterbegin','<div class="card err">'+esc(e.message)+'</div>');scrollTo(0,0)})}
 function pushCfg(c,a,e){return api('setStatus',{closed:c,start:iso(a),deadline:iso(e)}).then(function(j){Object.assign(SV,j);admin()}).catch(showErr)}
@@ -230,10 +250,23 @@ function rmAcc(i){if(!isOwn)return;api('removeViewer',{email:acc()[i]}).then(fun
  v.innerHTML='<div class="card"><h3>Вход через Google</h3><p class="mu">Для участия нужен аккаунт Google. Один аккаунт - один ответ. Владелец опроса и аналитики входят так же: после входа сервер сам определит роль и откроет нужные разделы.</p><div id="gbtn" style="margin-top:10px"></div><div class="err" id="le"></div></div>';
  cc.querySelector('.mu').innerHTML='На почту владельца отправлен одноразовый код. Введите его для подтверждения прав владельца.';v.appendChild(cc);
  var rb=document.querySelector('button[onclick="resetDemo()"]');if(rb)rb.remove();
+ 
  window.addEventListener('load',function(){
   if(CID.indexOf('ВСТАВЬТЕ')>-1||API.indexOf('ВСТАВЬТЕ')>-1){$('le').textContent='Сайт не настроен: впишите CID и API в начале скрипта.';return}
-  if(window.google&&google.accounts){google.accounts.id.initialize({client_id:CID,callback:onGoogle});google.accounts.id.renderButton($('gbtn'),{theme:'outline',size:'large',locale:'ru'})}
-  else $('le').textContent='Не удалось загрузить вход Google. Проверьте интернет или VPN.'})})();
-</script>
-</body>
-</html>
+  if(window.google&&google.accounts){
+    google.accounts.id.initialize({client_id:CID,callback:onGoogle});
+    google.accounts.id.renderButton($('gbtn'),{theme:'outline',size:'large',locale:'ru'});
+    
+    // Автоматическое восстановление входа при обновлении страницы (F5)
+    if(TOK){
+      $('le').textContent='Восстановление сессии…';
+      refresh().then(enter).catch(function(e){
+        TOK=''; SES='';
+        localStorage.removeItem('ss_tok');
+        localStorage.removeItem('ss_ses');
+        $('le').textContent='';
+      });
+    }
+  }
+  else $('le').textContent='Не удалось загрузить вход Google. Проверьте интернет или VPN.';
+ })})();
