@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Школьный опрос: комфорт и досуг</title>
+<meta name="description" content="Опрос для учеников 5–11 классов">
+<meta property="og:title" content="Школьный опрос: комфорт и досуг">
+<meta property="og:description" content="Опрос для учеников 5–11 классов">
+<meta property="og:type" content="website">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+ --bg:#F6F4EC;--card:#FFFDF8;--tx:#23262B;--mu:#767C87;--bd:#E7E1D2;--ac:#7B5CFA;--acl:#EFE9FF;--ok:#1FA97A;--er:#F0476B;
+ --s0:#7B5CFA;--s1:#7B5CFA;--s2:#F2A33E;--s3:#17B6A7;--s4:#3FBF7F;--s5:#F2498A;--accent:var(--ac)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#1C1A22;--card:#262430;--tx:#ECE9F5;--mu:#A39FB3;--bd:#3B3748;--ac:#9C85FF;--acl:#332C57}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+ background-color:var(--bg);background-image:radial-gradient(var(--bd) 1px,transparent 1px);background-size:16px 16px}
+h1,h3,.brand-font{font-family:"Baloo 2",system-ui,sans-serif}
+header{background:var(--card);padding:12px 16px 10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;
+ border-bottom:1px solid var(--bd);position:relative}
+header::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;background:linear-gradient(90deg,var(--s1),var(--s2),var(--s3),var(--s4),var(--s5))}
+.logo{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:10px;background:var(--ac);color:#fff;font-size:16px;margin-right:2px;flex:none}
+h1{font-size:18px;font-weight:700;margin:0;display:inline-flex;align-items:center;gap:8px}main{max-width:760px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-left:5px solid var(--accent,var(--ac));border-radius:16px;padding:16px;margin-bottom:12px;
+ box-shadow:0 2px 0 rgba(0,0,0,.03)}
+.card h3{margin:0 0 4px;font-size:16px;font-weight:700}.mu{color:var(--mu);font-size:13px}
+.opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 14px;margin-top:8px;border:1.5px solid var(--bd);border-radius:13px;background:var(--card);color:var(--tx);font:inherit;cursor:pointer;transition:transform .08s,border-color .12s,background .12s}
+.opt:active{transform:scale(.98)}
+.opt.on{border-color:var(--accent,var(--ac));background:color-mix(in srgb,var(--accent,var(--ac)) 12%,var(--card))}
+button.b,select,input,textarea{font:inherit}
+.b{padding:10px 18px;border-radius:12px;border:1.5px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer;font-weight:700;transition:transform .08s}
+.b:active{transform:scale(.96)}
+.b.p{background:var(--accent,var(--ac));color:#fff;border-color:var(--accent,var(--ac))}.b.d{background:var(--er);color:#fff;border-color:var(--er)}
+input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--bd);border-radius:12px;background:var(--card);color:var(--tx)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sc{display:flex;gap:8px}
+.sc button{flex:1;padding:11px 0;border:1.5px solid var(--bd);border-radius:50%;aspect-ratio:1;background:var(--card);color:var(--tx);cursor:pointer;font-weight:800;transition:transform .1s}
+.sc button:active{transform:scale(.92)}
+.sc button.on:nth-child(1){background:#F0476B;border-color:#F0476B;color:#fff}
+.sc button.on:nth-child(2){background:#F2824A;border-color:#F2824A;color:#fff}
+.sc button.on:nth-child(3){background:#F2A33E;border-color:#F2A33E;color:#fff}
+.sc button.on:nth-child(4){background:#8CC152;border-color:#8CC152;color:#fff}
+.sc button.on:nth-child(5){background:#1FA97A;border-color:#1FA97A;color:#fff}
+.g{overflow-x:auto}.g table{border-collapse:collapse;min-width:420px;width:100%}.g td{padding:6px 4px;text-align:center}.g td:first-child{text-align:left}
+.bar{height:10px;background:var(--bd);border-radius:9px;overflow:hidden;margin:3px 0 9px}.bar i{display:block;height:100%;background:var(--accent,var(--ac));border-radius:9px}
+.lbl{display:flex;justify-content:space-between;gap:10px;font-size:13px}
+.tag{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700}.t-ok{background:#d1fae5;color:#065f46}.t-no{background:#ffe4e6;color:#9f1239}
+.pb{height:7px;background:var(--bd);border-radius:0 0 7px 7px;overflow:hidden}.pb i{display:block;height:100%;border-radius:0 0 7px 7px;transition:width .3s;background:linear-gradient(90deg,var(--s1),var(--s2),var(--s3),var(--s4),var(--s5))}
+li.cm{list-style:none;background:var(--bg);border-radius:10px;padding:7px 10px;margin:6px 0;font-size:13px;line-height:1.45}li.cm b{color:var(--accent,var(--ac))}
+ul.cmlist{padding:8px;margin:0;max-height:420px;overflow-y:auto;border:1px solid var(--bd);border-radius:12px}
+ul.cmlist::-webkit-scrollbar{width:8px}ul.cmlist::-webkit-scrollbar-thumb{background:var(--bd);border-radius:8px}
+.cmhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.hide{display:none!important}.err{color:var(--er);font-size:13px;margin-top:6px}
+@media print{header,.noprint,.pb{display:none!important}body{background:#fff;color:#000}.card{break-inside:avoid;border-color:#ccc;border-left-color:#ccc;box-shadow:none}}
+</style>
+</head>
+<body>
+<header class="noprint">
+  <div><h1><span class="logo">📋</span>Школьный опрос: комфорт и досуг</h1><div class="mu" id="who">Не выполнен вход</div></div>
+  <div class="row"><button class="b" id="tS" onclick="tab('s')">Опрос</button><button class="b hide" id="tA" onclick="tab('a')">Аналитика</button><button class="b hide" id="out" onclick="logout()">Выйти</button></div>
+</header>
+<div class="pb noprint"><i id="pb" style="width:0"></i></div>
+<main>
+<section id="vLogin">
+  <div class="card"><h3>Вход для учеников</h3><p class="mu">Для участия нужен аккаунт Google. Один аккаунт - один ответ.</p>
+  <input id="em" type="email" placeholder="почта, например ivan@gmail.com">
+  <div class="row" style="margin-top:10px"><button class="b p" onclick="adminEntry=0;login(false)">Войти как ученик</button></div>
+  <div class="err" id="le"></div></div>
+  <div class="card" id="oc2" style="border-color:var(--ac)"><h3>🔐 Вход для владельца и аналитиков</h3><p class="mu">Результаты опроса, управление сроками и скачивание отчётов. Доступ только по списку почт.</p><input id="em2" type="email" placeholder="почта владельца или аналитика"><div class="row" style="margin-top:10px"><button class="b p" onclick="adminLogin()">Войти в аналитику</button></div><div class="err" id="le2"></div><div class="mu" style="margin-top:6px">Демо: после ввода почты владельца потребуется одноразовый код.</div></div>
+  <div class="card hide" id="cc"><h3>Подтверждение владельца</h3><div class="mu">На почту владельца отправлен одноразовый код. <b>Демо:</b> код показан здесь: <b id="dc"></b>. В боевой версии он приходит только на почту, а на экране не показывается.</div><input id="ci" inputmode="numeric" maxlength="6" placeholder="6-значный код" style="margin-top:8px"><div class="row" style="margin-top:8px"><button class="b p" onclick="chk()">Подтвердить</button><button class="b" onclick="$('cc').classList.add('hide')">Отмена</button></div><div class="err" id="ce"></div></div>
+</section>
+
+<section id="vS" class="hide"><div id="step"></div>
+  <div class="row noprint" style="justify-content:space-between;margin-top:6px"><button class="b" id="bp" onclick="go(-1)">← Назад</button><button class="b p" id="bn" onclick="go(1)">Далее →</button></div>
+</section>
+
+<section id="vA" class="hide">
+  <div class="card noprint"><h3>Управление опросом</h3><div id="ownctl">
+    <div class="row" style="margin:8px 0">Статус: <span id="stt"></span></div>
+    <div class="row"><label class="mu" style="flex:1;min-width:210px">Начало опроса<input type="datetime-local" id="st"></label><label class="mu" style="flex:1;min-width:210px">Окончание опроса<input type="datetime-local" id="dl"></label></div>
+    <div class="row" style="margin-top:8px"><button class="b p" onclick="setDl()">Сохранить сроки</button><button class="b d" id="cl" onclick="toggleOpen()"></button></div>
+    </div><hr style="border:0;border-top:1px solid var(--bd);margin:14px 0">
+    <div class="row"><select id="fl" onchange="stats()" style="max-width:190px"></select><button class="b p" onclick="window.print()">PDF (печать)</button><button class="b" onclick="xl()">Excel (.xlsx)</button><button class="b" onclick="resetDemo()">Сбросить демо</button></div>
+  </div>
+  <div class="card noprint hide" id="accCard"><h3>Доступ к аналитике</h3><div class="mu">Только вы (владелец) выдаёте доступ. Приглашённые видят аналитику и скачивают отчёты (PDF, Excel), но не меняют сроки и не завершают опрос.</div>
+<textarea id="ae" rows="2" placeholder="почты через запятую или с новой строки" style="margin-top:8px"></textarea>
+<div class="row" style="margin-top:8px"><button class="b p" onclick="addAcc()">Выдать доступ и отправить приглашения</button></div><div id="am" class="mu" style="margin-top:6px"></div><div id="al"></div></div>
+<div id="stats"></div>
+</section>
+</main>
+
+<script>
+var G=['5 класс','6 класс','7 класс','8 класс','9 класс','10 класс','11 класс'];
+var S=[
+{s:'Класс',d:'Укажи класс, чтобы мы учли мнение разных возрастов.',q:[{id:'grade',t:'sel',l:'В каком классе ты учишься?',o:G,r:1}]},
+{s:'1. Зеркала',d:'Где не хватает зеркал и какой формат удобнее.',q:[
+ {id:'m1',t:'r',l:'Не хватает ли в школе зеркал?',o:['Да, их критически мало','В целом хватает, но не помешало бы добавить пару штук','Нет, зеркал достаточно']},
+ {id:'m2',t:'c',l:'Где зеркала нужнее всего? (можно несколько)',o:['В туалетах (над раковинами)','В раздевалках (возле гардероба)','В спортивных раздевалках','В коридорах / холле на этажах','В актовом зале / гримерке']},
+ {id:'m3',t:'r',l:'Какой формат удобнее и безопаснее?',o:['Небольшие зеркала над каждой раковиной','Одно большое зеркало в полный рост','Антивандальные (небьющиеся) зеркала']},
+ {id:'m4',t:'x',l:'Пожелания по зеркалам (необязательно)'}]},
+{s:'2. Питание',d:'Оцени работу столовой и буфета.',q:[
+ {id:'f1',t:'r',l:'Как часто ты питаешься в столовой?',o:['Каждый день','Несколько раз в неделю','Только выпечка / напитки в буфете','Не питаюсь совсем']},
+ {id:'f2',t:'g',l:'Оцени от 1 (очень плохо) до 5 (отлично)',rows:['Вкус блюд','Температура еды','Размер порций','Разнообразие меню','Чистота посуды и столов']},
+ {id:'f3',t:'r',l:'Хватает ли времени на перемене, чтобы поесть?',o:['Да, достаточно','Нет, большие очереди','Нет, перемена слишком короткая']},
+ {id:'f4',t:'x',l:'Что добавить в меню, а что убрать? (необязательно)'}]},
+{s:'3. Туалеты',d:'Честная оценка санитарного состояния.',q:[
+ {id:'t1',t:'n',l:'Общее санитарное состояние туалетов (1 - очень плохо, 5 - отлично)'},
+ {id:'t2',t:'c',l:'С какими проблемами сталкиваешься чаще всего?',o:['Нет туалетной бумаги','Нет мыла или полотенец/сушилок','Сломанные замки на кабинках','Неисправная сантехника','Неприятный запах / плохая вентиляция','Скопления учеников (курение/вейпы, шум)','Проблем нет']},
+ {id:'t3',t:'c',l:'Какой этаж требует наибольшего внимания?',o:['1 этаж','2 этаж','3 этаж','4 этаж','Спортивный блок']},
+ {id:'t4',t:'x',l:'Что исправить в первую очередь? (необязательно)'}]},
+{s:'4. Чаепития',d:'Как завершать четверти в классах.',q:[
+ {id:'c1',t:'r',l:'Нравится ли идея классных чаепитий в конце четверти?',o:['Да, отличная традиция','Всё равно, но не против','Нет, лучше уйти домой пораньше']},
+ {id:'c2',t:'r',l:'Как организовывать стол?',o:['Каждый приносит что-то из дома','Скидываемся и заказываем пиццу / пироги','Каждый приносит еду строго для себя']},
+ {id:'c3',t:'c',l:'Чем заниматься на чаепитии?',o:['Общаться под музыку','Настольные игры','Смотреть фильм / видео','Викторина с призами','«Тайный Санта» / обмен подарками']},
+ {id:'c4',t:'x',l:'Твои идеи для завершения четверти (необязательно)'}]},
+{s:'5. Дискотеки',d:'Формат вечерних мероприятий.',q:[
+ {id:'d1',t:'r',l:'Хочешь ли ты школьные дискотеки или балы?',o:['Да, обязательно!','Да, при хорошей организации и музыке','Нет, неинтересно']},
+ {id:'d2',t:'r',l:'Какой формат ближе?',o:['Дискотека со светомузыкой и диджеем','Классический бал (дресс-код, вальс)','Тематическая вечеринка','Концерт школьных групп с танцполом']},
+ {id:'d3',t:'r',l:'Как часто проводить?',o:['Раз в четверть','2 раза в год','Только по крупным праздникам']},
+ {id:'d4',t:'r',l:'Для каких классов?',o:['Раздельно (5–7 и 8–11 классы)','Только 8–11 классы','Общая для всех (5–11)']},
+ {id:'d6',t:'r',l:'Где лучше проводить дискотеки и балы?',o:['Актовый зал','Спортивный зал','Школьный двор / улица (в тёплое время)','Столовая или большая рекреация','Внешняя площадка (кафе, клуб, ДК)']},
+ {id:'d5',t:'x',l:'2–3 любимых исполнителя или жанра для плейлиста (необязательно)',w:'Без мата, агрессии и упоминания вредных привычек: такие варианты не пройдут модерацию администрации.'}]}
+];
+var QM={},ALL=[];S.forEach(function(s){s.q.forEach(function(q){QM[q.id]=q;ALL.push(q)})});
+var SECCOL=['#7B5CFA','#7B5CFA','#F2A33E','#17B6A7','#3FBF7F','#F2498A'];
+function secColor(i){return SECCOL[i]||SECCOL[0]}
+var OWNER='',K={r:'ss_resp',v:'ss_voted',c:'ss_cfg',a:'ss_acc'};
+var st=0,ans={},me=null,isAdm=false,isOwn=false,pend='',code='',tr=0,adminEntry=0;
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function acc(){return ld(K.a,[])}
+function cfg(){return ld(K.c,{closed:false,start:'',deadline:''})}
+function fmt(s){return new Date(s).toLocaleString('ru-RU',{dateStyle:'long',timeStyle:'short'})}
+function phase(){var c=cfg(),n=new Date();if(c.closed||(c.deadline&&n>new Date(c.deadline)))return'end';if(c.start&&n<new Date(c.start))return'wait';return'open'}
+function isOpen(){return phase()=='open'}
+function rnd(a){return a[Math.floor(Math.random()*a.length)]}
+function demo(){var out=[],tx={m4:['Нужно зеркало в раздевалке','Над раковинами на 2 этаже'],f4:['Больше фруктов','Вторая касса в буфете'],t4:['Починить замки','Мыло и бумага'],c4:['Киновечер','Турнир по настолкам'],d5:['Инди-поп, ремиксы','Поп-музыка']};
+ for(var i=0;i<14;i++){var a={};ALL.forEach(function(q){if(q.t=='r'||q.t=='sel')a[q.id]=rnd(q.o);else if(q.t=='c'){a[q.id]=q.o.filter(function(){return Math.random()<.4})}else if(q.t=='n')a[q.id]=1+Math.floor(Math.random()*5);else if(q.t=='g'){a[q.id]={};q.rows.forEach(function(_,j){a[q.id][j]=2+Math.floor(Math.random()*4)})}else if(Math.random()<.4)a[q.id]=rnd(tx[q.id]||['—'])});
+ out.push({t:'2026-11-'+(10+i)+' 12:00',demo:1,a:a})}return out}
+function resp(){var r=ld(K.r,null);if(!r){r=demo();sv(K.r,r)}return r}
+
+function login(adm){var e=$('em').value.trim().toLowerCase();
+ if(adm)e=pend;else if(!/^\S+@\S+\.\S+$/.test(e)){$('le').textContent='Введите корректную почту Google';return}
+ if(e==OWNER&&!adm){pend=e;chal();return}
+ isOwn=!!adm;isAdm=isOwn||acc().indexOf(e)>-1;
+ me=e;$('who').textContent='Вы вошли: '+e+(isOwn?' (владелец опроса)':isAdm?' (доступ к аналитике)':'');
+ $('vLogin').classList.add('hide');$('out').classList.remove('hide');$('tA').classList.toggle('hide',!isAdm);tab(isAdm&&adminEntry?'a':'s')}
+function adminLogin(){var e=$('em2').value.trim().toLowerCase();$('le2').textContent='';if(!/^\S+@\S+\.\S+$/.test(e)){$('le2').textContent='Введите корректную почту';return}if(e!=OWNER&&acc().indexOf(e)<0){$('le2').textContent='Для этой почты доступ к аналитике не выдан. Обратитесь к владельцу опроса.';return}adminEntry=1;$('em').value=e;login(false)}
+function chal(){code=String(100000+Math.floor(Math.random()*900000));tr=0;$('dc').textContent=code;$('ci').value='';$('ce').textContent='';$('cc').classList.remove('hide');$('cc').scrollIntoView({behavior:'smooth'})}
+function chk(){if(code&&$('ci').value.trim()==code){code='';$('cc').classList.add('hide');login(true)}else{tr++;if(tr>=3){code='';$('cc').classList.add('hide');$('le').textContent='Слишком много неверных попыток. Войдите заново.'}else $('ce').textContent='Неверный код'}}
+function logout(){me=null;isAdm=false;isOwn=false;adminEntry=0;ans={};st=0;$('who').textContent='Не выполнен вход';['vS','vA','out','tA'].forEach(function(i){$(i).classList.add('hide')});$('vLogin').classList.remove('hide');$('pb').style.width=0}
+function tab(t){if(!me)return;$('vS').classList.toggle('hide',t!='s');$('vA').classList.toggle('hide',t!='a'||!isAdm);if(t=='s')draw();else{admin();stats()}}
+
+function draw(){var box=$('step');
+ if(ld(K.v,[]).indexOf(me)>-1&&!isAdm){box.innerHTML='<div class="card"><h3>✅ Вы уже прошли опрос</h3><p class="mu">Один аккаунт может ответить только один раз. Спасибо!</p></div>';nav(0);return}
+ if(!isOpen()){var c=cfg();box.innerHTML=phase()=='wait'?'<div class="card"><h3>Опрос ещё не начался</h3><p class="mu">Приём ответов откроется: '+fmt(c.start)+'</p></div>':'<div class="card"><h3>Опрос завершён</h3><p class="mu">Ответы больше не принимаются. Спасибо всем участникам!</p></div>';nav(0);return}
+ var s=S[st],accent=secColor(st);$('pb').style.width=((st+1)/S.length*100)+'%';
+ var h='<div class="card" style="--accent:'+accent+'"><h3>'+esc(s.s)+'</h3><div class="mu">'+esc(s.d)+'</div></div>';
+ s.q.forEach(function(q,qi){h+='<div class="card" id="q_'+q.id+'" style="--accent:'+accent+'"><h3>'+(qi+1)+'. '+esc(q.l)+(q.r?' <span style="color:var(--er)">*</span>':'')+'</h3>';
+  if(q.w)h+='<div class="mu" style="background:#fef3c7;color:#78350f;padding:7px 10px;border-radius:8px;margin-top:6px">⚠ '+esc(q.w)+'</div>';
+  if(q.t=='sel'){h+='<select onchange="ans.grade=this.value;this.parentNode.querySelector(\'.err\')&&(this.parentNode.querySelector(\'.err\').textContent=\'\')"><option value="">Выбери класс…</option>'+q.o.map(function(o){return'<option'+(ans[q.id]==o?' selected':'')+'>'+o+'</option>'}).join('')+'</select><div class="err"></div>'}
+  else if(q.t=='r'||q.t=='c'){q.o.forEach(function(o,i){var on=q.t=='r'?ans[q.id]==o:(ans[q.id]||[]).indexOf(o)>-1;h+='<button type="button" class="opt'+(on?' on':'')+'" onclick="pick(\''+q.id+'\','+i+')">'+(q.t=='c'?(on?'☑ ':'☐ '):(on?'◉ ':'○ '))+esc(o)+'</button>'})}
+  else if(q.t=='n'){h+='<div class="sc" style="margin-top:10px">'+[1,2,3,4,5].map(function(n){return'<button type="button" class="'+(ans[q.id]==n?'on':'')+'" onclick="ans.'+q.id+'='+n+';draw()">'+n+'</button>'}).join('')+'</div>'}
+  else if(q.t=='g'){h+='<div class="g"><table>'+q.rows.map(function(r,j){return'<tr><td>'+esc(r)+'</td>'+[1,2,3,4,5].map(function(n){var on=(ans[q.id]||{})[j]==n;return'<td><button type="button" class="b'+(on?' p':'')+'" style="padding:6px 11px" onclick="gr(\''+q.id+'\','+j+','+n+')">'+n+'</button></td>'}).join('')+'</tr>'}).join('')+'</table></div>'}
+  else h+='<textarea rows="3" style="margin-top:8px" oninput="ans.'+q.id+'=this.value">'+esc(ans[q.id]||'')+'</textarea>';
+  h+='</div>'});
+ box.innerHTML=h;nav(1)}
+function nav(on){$('bp').classList.toggle('hide',!on||st==0);$('bn').classList.toggle('hide',!on);$('bn').textContent=st==S.length-1?'Отправить ✓':'Далее →'}
+function pick(id,i){var q=QM[id],v=q.o[i];if(q.t=='r')ans[id]=ans[id]==v?'':v;else{var a=ans[id]||[],k=a.indexOf(v);k>-1?a.splice(k,1):a.push(v);ans[id]=a}draw()}
+function gr(id,j,n){ans[id]=ans[id]||{};ans[id][j]=n;draw()}
+function go(d){if(d>0){if(!ans.grade){var e=document.querySelector('#q_grade .err');if(e)e.textContent='Выбери класс, чтобы продолжить';else{st=0;draw();document.querySelector('#q_grade .err').textContent='Выбери класс, чтобы продолжить'}return}
+ if(st==S.length-1)return submit()}
+ st=Math.max(0,Math.min(S.length-1,st+d));draw();scrollTo(0,0)}
+function submit(){if(!isOpen()){draw();return}var v=ld(K.v,[]);if(v.indexOf(me)>-1&&!isAdm)return draw();
+ var r=resp();r.unshift({t:new Date().toISOString().slice(0,16).replace('T',' '),demo:0,a:JSON.parse(JSON.stringify(ans))});sv(K.r,r);if(!isAdm){v.push(me);sv(K.v,v)}
+ $('step').innerHTML='<div class="card"><h3>✅ Ваш голос учтён для обращения к директору</h3><p class="mu">Спасибо за участие!</p>'+(isAdm?'<button class="b p" onclick="ans={};st=0;draw()">Пройти ещё раз (демо)</button>':'')+'</div>';nav(0);$('pb').style.width='100%'}
+
+function admin(){$('ownctl').classList.toggle('hide',!isOwn);$('accCard').classList.toggle('hide',!isOwn);if(isOwn)accList();var c=cfg(),p=phase();$('stt').innerHTML='<span class="tag '+(p=='open'?'t-ok':'t-no')+'">'+(p=='open'?'Идёт приём ответов':p=='wait'?'Ещё не начался':'Опрос завершён')+'</span>'+(c.start?' · старт: '+fmt(c.start):'')+(c.deadline?' · окончание: '+fmt(c.deadline):'');
+ $('cl').textContent=c.closed?'Возобновить опрос':'Завершить опрос';$('dl').value=c.deadline||'';$('st').value=c.start||'';
+ var f=$('fl'),cur=f.value||'all';f.innerHTML='<option value="all">Все классы</option>'+G.map(function(g){return'<option>'+g+'</option>'}).join('');f.value=cur}
+function toggleOpen(){if(!isOwn)return;var c=cfg();c.closed=!c.closed;if(!c.closed&&c.deadline&&new Date()>new Date(c.deadline))c.deadline='';sv(K.c,c);admin()}
+function setDl(){if(!isOwn)return;var c=cfg(),a=$('st').value,e=$('dl').value;if(a&&e&&e<=a){$('stt').innerHTML='<span class="tag t-no">Окончание должно быть позже старта</span>';return}c.start=a;c.deadline=e;sv(K.c,c);admin()}
+function resetDemo(){if(!isOwn)return;sv(K.r,demo());sv(K.v,[]);stats()}
+
+function addAcc(){if(!isOwn)return;var m=$('ae').value.toLowerCase().split(/[\s,;]+/).filter(Boolean),ok=[],bad=[],a=acc();
+ m.forEach(function(e){if(!/^\S+@\S+\.\S+$/.test(e))bad.push(e);else if(e!=OWNER&&a.indexOf(e)<0){a.push(e);ok.push(e)}});
+ sv(K.a,a);$('ae').value='';$('am').textContent=(ok.length?'Доступ выдан, приглашения отправлены (в демо - имитация): '+ok.join(', ')+'. ':'')+(bad.length?'Некорректные почты: '+bad.join(', '):'');accList()}
+function rmAcc(i){if(!isOwn)return;var a=acc();a.splice(i,1);sv(K.a,a);accList()}
+function accList(){var a=acc();$('al').innerHTML=a.length?a.map(function(e,i){return'<div class="row" style="justify-content:space-between;margin-top:6px"><span>'+esc(e)+'</span><button class="b" onclick="rmAcc('+i+')">Убрать доступ</button></div>'}).join(''):'<div class="mu" style="margin-top:6px">Дополнительных доступов пока нет</div>'}
+function stats(){var f=$('fl').value||'all',R=resp().filter(function(r){return f=='all'||r.a.grade==f}),n=R.length,h='';
+ h+='<div class="card"><h3>Сводный отчёт по результатам опроса «Комфорт и досуг»</h3><div class="mu">Опрошено: <b>'+n+'</b> · '+(f=='all'?'все классы (5–11)':f)+' · сформировано '+new Date().toLocaleDateString('ru-RU')+'</div></div>';
+ S.forEach(function(s,si){var accent=secColor(si);
+  h+='<h3 class="brand-font" style="margin:20px 2px 8px;color:'+accent+'"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:'+accent+';margin-right:7px;vertical-align:middle"></span>'+esc(s.s=='Класс'?'Участники':'Раздел '+s.s)+'</h3>';
+  s.q.forEach(function(q){h+='<div class="card" style="--accent:'+accent+'"><h3>'+esc(q.l)+'</h3>';
+   if(q.t=='x'){var c=R.filter(function(r){return r.a[q.id]&&String(r.a[q.id]).trim()});
+    h+=c.length?('<div class="cmhead"><span class="mu">Ответов: <b>'+c.length+'</b></span><button type="button" class="b" style="padding:5px 10px;font-size:12px" onclick="copyAnswers(\''+q.id+'\')">Скопировать все</button></div>'
+     +'<ul class="cmlist" id="cm_'+q.id+'">'+c.map(function(r,i){return'<li class="cm">'+(i+1)+'. <b>'+esc(r.a.grade)+':</b> '+esc(r.a[q.id])+'</li>'}).join('')+'</ul>')
+    :'<div class="mu">Комментариев пока нет</div>'}
+   else if(q.t=='g'){q.rows.forEach(function(rw,j){var v=R.map(function(r){return(r.a[q.id]||{})[j]}).filter(Boolean),m=v.length?(v.reduce(function(a,b){return a+b},0)/v.length):0;h+=bar(rw,m.toFixed(1)+' / 5',m/5*100,accent)})}
+   else{var opts=q.t=='n'?[1,2,3,4,5]:q.o;if(q.t=='n'){var vs=R.map(function(r){return r.a[q.id]}).filter(Boolean);h+='<div class="mu">Средняя оценка: <b>'+(vs.length?(vs.reduce(function(a,b){return a+b},0)/vs.length).toFixed(1):'—')+' / 5</b></div>'}
+    opts.forEach(function(o){var c=R.filter(function(r){var v=r.a[q.id];return Array.isArray(v)?v.indexOf(o)>-1:v==o}).length,p=n?Math.round(c/n*100):0;h+=bar(q.t=='n'?'Оценка '+o:o,c+' ('+p+'%)',p,accent)})}
+   h+='</div>'})});
+ $('stats').innerHTML=h}
+function bar(l,v,p,color){return'<div class="lbl"><span>'+esc(l)+'</span><b>'+v+'</b></div><div class="bar"><i style="width:'+Math.max(0,Math.min(100,p))+'%'+(color?';background:'+color:'')+'"></i></div>'}
+function copyAnswers(qid){var lis=$('cm_'+qid).querySelectorAll('li'),text=Array.prototype.map.call(lis,function(li){return li.textContent}).join('\n');
+ var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+ try{document.execCommand('copy');alert('Скопировано: '+lis.length+' ответ(ов). Вставьте в заметки (Ctrl+V).')}catch(e){alert('Не удалось скопировать автоматически. Выделите текст в списке вручную.')}
+ document.body.removeChild(ta)}
+
+if(location.hash=='#admin'){setTimeout(function(){$('em2').focus()},100)}
+function xl(){var R=resp(),hd=['Дата','Тип'],cols=[];ALL.forEach(function(q){if(q.t=='g')q.rows.forEach(function(r,j){hd.push(q.l+': '+r);cols.push([q.id,j])});else{hd.push(q.l);cols.push([q.id])}});
+ var rows=[hd].concat(R.map(function(r){var o=[r.t,r.demo?'Демо':'Реальный'];cols.forEach(function(c){var v=r.a[c[0]];if(c.length>1)v=(v||{})[c[1]];o.push(Array.isArray(v)?v.join('; '):(v==null?'':v))});return o}));
+ try{var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),'Ответы');XLSX.writeFile(wb,'shkolny_opros.xlsx')}catch(e){alert('В предпросмотре скачивание может быть отключено. В боевой версии кнопка работает.')}}
+
+/* ===================== БОЕВОЙ РЕЖИМ: Google + сервер ===================== */
+var API='https://script.google.com/macros/s/AKfycbxWH1ddzIJ3DcNs92WB36vn7lGanBH6hXPHOCRvfBggy6QyYtP0GFF-W-Zc5HDiF9nc/exec',CID='608509920847-vj7b35133qesqr78ilnjqji5r66c08un.apps.googleusercontent.com';
+var TOK='',SES='',SV={};
+var SKEY='ss_session';
+function saveSession(){try{localStorage.setItem(SKEY,JSON.stringify({tok:TOK,ses:SES,me:me}))}catch(e){}}
+function clearSession(){try{localStorage.removeItem(SKEY)}catch(e){}}
+function loadSession(){try{var r=localStorage.getItem(SKEY);return r?JSON.parse(r):null}catch(e){return null}}
+function api(a,x){var b=Object.assign({action:a,idToken:TOK,session:SES},x||{});
+ return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(b)}).then(function(r){return r.json()}).then(function(j){if(!j.ok)throw new Error(j.error||'Ошибка сервера');return j})}
+function loc(i){if(!i)return'';var d=new Date(i);return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,16)}
+function iso(x){return x?new Date(x).toISOString():''}
+function cfg(){return{closed:!!SV.closed,start:loc(SV.start),deadline:loc(SV.deadline)}}
+function phase(){return SV.phase||'open'}
+function acc(){return SV.viewers||[]}
+function resp(){return(SV.responses||[]).map(function(r){return{t:r.timestamp,demo:0,a:r.answers}})}
+function ld(k,d){return k==K.v?(SV.voted?[me]:[]):d}
+function sv(){}
+function showErr(e){var t=$('stt');if(isOwn&&t)t.innerHTML='<span class="tag t-no">'+esc(e.message)+'</span>';else alert(e.message)}
+
+function onGoogle(r){TOK=r.credential;
+ try{me=JSON.parse(decodeURIComponent(escape(atob(r.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))))).email}catch(e){}
+ $('le').textContent='Проверяем доступ…';refresh().then(enter).catch(function(e){$('le').textContent=e.message})}
+function refresh(){return api('whoami').then(function(j){SV=Object.assign(SV,j);return j})}
+function enter(j){$('le').textContent='';
+ if(j.role=='owner_pending'){api('ownerCode').then(function(){$('cc').classList.remove('hide');$('cc').scrollIntoView({behavior:'smooth'})}).catch(function(e){$('le').textContent=e.message});return}
+ finish(j)}
+function finish(j){isOwn=j.role=='owner';isAdm=isOwn||j.role=='viewer';
+ saveSession();
+ $('who').textContent='Вы вошли: '+me+(isOwn?' (владелец опроса)':isAdm?' (доступ к аналитике)':'');
+ $('vLogin').classList.add('hide');$('out').classList.remove('hide');$('tA').classList.toggle('hide',!isAdm);
+ if(isAdm)loadAdmin().then(function(){tab('a')}).catch(showErr);else tab('s')}
+function loadAdmin(){return api('results').then(function(r){SV.responses=r.responses;Object.assign(SV,{closed:r.closed,phase:r.phase,start:r.start,deadline:r.deadline})}).then(function(){return isOwn?api('listViewers').then(function(r){SV.viewers=r.viewers}):0})}
+var _tab=tab;tab=function(t){if(t=='a'&&isAdm)return loadAdmin().then(function(){_tab('a')}).catch(showErr);_tab(t)};
+function chk(){api('ownerVerify',{code:$('ci').value.trim()}).then(function(j){SES=j.session;$('cc').classList.add('hide');return refresh()}).then(finish).catch(function(e){$('ce').textContent=e.message})}
+var _lo=logout;logout=function(){TOK='';SES='';SV={};clearSession();try{google.accounts.id.disableAutoSelect()}catch(e){}_lo()};
+
+function submit(){api('submit',{answers:ans}).then(function(){SV.voted=true;$('step').innerHTML='<div class="card"><h3>✅ Ваш голос учтён для обращения к директору</h3><p class="mu">Спасибо за участие!</p></div>';nav(0);$('pb').style.width='100%'}).catch(function(e){$('step').insertAdjacentHTML('afterbegin','<div class="card err">'+esc(e.message)+'</div>');scrollTo(0,0)})}
+function pushCfg(c,a,e){return api('setStatus',{closed:c,start:iso(a),deadline:iso(e)}).then(function(j){Object.assign(SV,j);admin()}).catch(showErr)}
+function toggleOpen(){if(!isOwn)return;var c=cfg(),cl=!c.closed,d=c.deadline;if(!cl&&d&&new Date()>new Date(d))d='';pushCfg(cl,c.start,d)}
+function setDl(){if(!isOwn)return;var c=cfg(),a=$('st').value,e=$('dl').value;if(a&&e&&e<=a)return showErr(new Error('Окончание должно быть позже старта'));pushCfg(c.closed,a,e)}
+function addAcc(){if(!isOwn)return;var m=$('ae').value.toLowerCase().split(/[\s,;]+/).filter(Boolean);
+ api('addViewers',{emails:m}).then(function(j){SV.viewers=j.viewers;$('ae').value='';$('am').textContent=(j.added.length?'Приглашения отправлены: '+j.added.join(', ')+'. ':'')+(j.bad.length?'Некорректные почты: '+j.bad.join(', '):'');accList()}).catch(showErr)}
+function rmAcc(i){if(!isOwn)return;api('removeViewer',{email:acc()[i]}).then(function(j){SV.viewers=j.viewers;accList()}).catch(showErr)}
+
+/* --- интерфейс входа: одна кнопка Google, роль определяет сервер --- */
+(function(){var cc=$('cc'),v=$('vLogin'),n=document.querySelector('main > .card');if(n)n.remove();
+ v.innerHTML='<div class="card"><h3>Вход через Google</h3><p class="mu">Для участия нужен аккаунт Google. Один аккаунт - один ответ. Владелец опроса и аналитики входят так же: после входа сервер сам определит роль и откроет нужные разделы.</p><div id="gbtn" style="margin-top:10px"></div><div class="err" id="le"></div></div>';
+ cc.querySelector('.mu').innerHTML='На почту владельца отправлен одноразовый код. Введите его для подтверждения прав владельца.';v.appendChild(cc);
+ var rb=document.querySelector('button[onclick="resetDemo()"]');if(rb)rb.remove();
+ window.addEventListener('load',function(){
+  if(CID.indexOf('ВСТАВЬТЕ')>-1||API.indexOf('ВСТАВЬТЕ')>-1){$('le').textContent='Сайт не настроен: впишите CID и API в начале скрипта.';return}
+  var showGoogleBtn=function(){
+   if(window.google&&google.accounts){google.accounts.id.initialize({client_id:CID,callback:onGoogle});google.accounts.id.renderButton($('gbtn'),{theme:'outline',size:'large',locale:'ru'})}
+   else $('le').textContent='Не удалось загрузить вход Google. Проверьте интернет или VPN.'};
+  var saved=loadSession();
+  if(saved&&saved.tok){
+   TOK=saved.tok;SES=saved.ses||'';me=saved.me||'';
+   $('le').textContent='Входим…';
+   refresh().then(function(j){
+    if(j.role=='owner_pending'){clearSession();TOK='';SES='';me=null;$('le').textContent='';showGoogleBtn();return}
+    finish(j);
+   }).catch(function(){clearSession();TOK='';SES='';me=null;$('le').textContent='';showGoogleBtn()});
+  }else{showGoogleBtn()}
+ })})();
+</script>
+</body>
+</html>
